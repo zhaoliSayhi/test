@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>动态统计</title>
+  <style type="text/css">
+    *{margin: 0; padding: 0; box-sizing: border-box;}
+    ul li {list-style: none}
+    .wrapper {
+      position: absolute;
+      width: 400px;
+      height: 300px;
+      top: 50%;
+      left: 50%;
+      margin-top: -150px;
+      margin-left: -200px;
+      border: 1px solid #000;
+    }
+    .wrapper .header {
+      display: flex;
+      height: 40px;
+      line-height: 40px;
+      justify-content: center;
+      align-items: center;
+      border-bottom: 1px solid #000
+    }
+    .column {
+      flex: 1;
+      text-align: center;
+      
+      border-right:  1px solid #000;
+    }
+    .column:last-child{border: none;}
+    .wrapper .content .pro-list {
+      margin: 20px 30px 20px 10px;
+      border: 1px solid #000;
+    }
+    .pro-list .item {
+      position: relative;
+      border-bottom: 1px solid #000;
+    }
+    .item:last-child {
+      border: none;
+    }
+    .pro-list-wrapper {
+      display: flex;
+      height: 30px;
+      line-height: 30px;
+      justify-content: center;
+      align-items: center
+    }
+    .pro-box {
+      position: absolute;
+      right: -20px;
+      top: 4px;
+      width: 16px;
+      height: 16px;
+    }
+    .pro-box input {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper" id="app">
+    <div class="header">
+      <div class="pro-all-num column">
+        数量：{{num}}
+      </div>
+      <div class="pro-all-price column">
+        价格：{{price}}
+      </div>
+      <div class="pro-btn column">
+       <button @click="checkAll">button</button>
+      </div>
+    </div>
+    <div class="content">
+      <ul class="pro-list">
+        <li class="item" v-for="(item, index) in items">
+          <div class="pro-list-wrapper">
+            <div class="pro-name column">{{item.name}}</div>
+            <div class="pro-desc column">{{item.desc}}</div>
+            <div class="pro-price column">{{item.price}}</div>
+          </div>         
+          <div class="pro-box">
+            <input type="checkbox" v-model="item.state"  @click="change(item,index)">
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      data() {
+        return {
+          items: [
+            {
+              name: 'name1',
+              desc: 'desc1',
+              price: '100',
+              state: false
+            }, 
+            {
+              name: 'name2',
+              desc: 'desc2',
+              price: '200',
+              state: false
+            }, 
+            {
+              name: 'name3',
+              desc: 'desc3',
+              price: '300',
+              state: false
+            }
+          ],
+          num: 0,
+          price: 0,
+          checkAllState: false
+        }
+      },
+      methods: {
+        change(item, index) {
+          this.changeState(item)
+        },
+        checkAll() {
+          this.checkAllState = !this.checkAllState
+          for(i of this.items) {
+            if (this.checkAllState) {
+              i.state = true
+            } else {
+              i.state = false
+            }
+            if (i.state) {
+              this.price = this.price + parseFloat(i.price)
+              this.num = this.items.length
+            } else {
+              this.price = this.price - parseFloat(i.price)
+              this.num = 0
+            }        
+          }
+        },
+        changeState(item) {
+          item.state = !item.state
+          if (item.state) {
+            this.price += parseInt(item.price)
+            this.num += 1
+          } else {
+            this.price -= parseInt(item.price)
+            this.num -= 1
+          }
+        }
+      }
+})
+  </script>
+
+</body>
+</html>
