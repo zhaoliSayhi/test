@@ -72,7 +72,7 @@
         价格：{{price}}
       </div>
       <div class="pro-btn column">
-       <button @click="checkAll">button</button>
+       <input type="checkbox" name="" v-model="checkedAll" @change="changeState()">
       </div>
     </div>
     <div class="content">
@@ -84,7 +84,7 @@
             <div class="pro-price column">{{item.price}}</div>
           </div>         
           <div class="pro-box">
-            <input type="checkbox" v-model="item.state"  @click="change(item,index)">
+            <input type="checkbox" :value="item" v-model="checkData">
           </div>
         </li>
       </ul>
@@ -101,57 +101,61 @@
             {
               name: 'name1',
               desc: 'desc1',
-              price: '100',
-              state: false
+              price: '100'
             }, 
             {
               name: 'name2',
               desc: 'desc2',
-              price: '200',
-              state: false
+              price: '200'
             }, 
             {
               name: 'name3',
               desc: 'desc3',
-              price: '300',
-              state: false
+              price: '300'
+            },
+            {
+              name: 'name4',
+              desc: 'desc4',
+              price: '400'
+            },
+            {
+              name: 'name5',
+              desc: 'desc5',
+              price: '500'
             }
           ],
           num: 0,
           price: 0,
-          checkAllState: false
+          checkData: [],
+          checkedAll: false
         }
       },
       methods: {
-        change(item, index) {
-          this.changeState(item)
-        },
-        checkAll() {
-          this.checkAllState = !this.checkAllState
-          for(i of this.items) {
-            if (this.checkAllState) {
-              i.state = true
-            } else {
-              i.state = false
-            }
-            if (i.state) {
-              this.price = this.price + parseFloat(i.price)
-              this.num = this.items.length
-            } else {
-              this.price = this.price - parseFloat(i.price)
-              this.num = 0
-            }        
+        changeState() {
+          this.checkData = []
+          if (this.checkedAll) {
+            this.items.forEach((item, index) => {
+              this.checkData.push(item)
+            })
           }
         },
-        changeState(item) {
-          item.state = !item.state
-          if (item.state) {
-            this.price += parseInt(item.price)
+        calculate(items) {
+          this.price = 0
+          this.num = 0
+          items.forEach((item) => {
+            this.price += parseFloat(item.price)
             this.num += 1
+          })
+        }
+      },
+      watch: {
+        checkData(data) {
+          if (this.checkData.length === this.items.length) {
+            this.checkedAll = true
           } else {
-            this.price -= parseInt(item.price)
-            this.num -= 1
+            this.checkedAll = false
           }
+          this.calculate(data)
         }
       }
 })
